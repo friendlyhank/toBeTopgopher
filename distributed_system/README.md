@@ -3,6 +3,7 @@
 从问题的发展引入思考
 
 图1.假设现在有200万张图片资源，需要随机的分配到3台服务器
+![ConsistentHashing1](images/ConsistentHashing1.jpg)
 
 除余法
 很多人一下子就想到了除余法,通过给每个图片唯一编号(较少的情况),或者通过hash文件名(假设文件名不重复)得到唯一的数字串,然后除余就能随机存放到服务器。
@@ -14,32 +15,32 @@ hash(文件名) % n
 在一个0~2^32区间的圆环上，计算服务器节点的hash值,。
 用同样的方式计算存储数据的hash,并映射到相同的圆上。
 然后从数据映射到的位置开始顺时针查找，那么在圆上必然能映射到具体一台节点服务器。
-
+![ConsistentHashing1](images/ConsistentHashing2.jpg)
 图2.一致hash算法映射到圆环
 这里解释一下,一致性Hash也是采用取模的方法,其hash计算的区间同样是在0~2^32,这算法很多语言都有,比如go语言的crc32.ChecksumIEEE就有实现此算法,那么这个一致性hash有什么优势呢?
-
+![ConsistentHashing1](images/ConsistentHashing3.jpg)
 图3.NodeB宕机/摘除的情况(虚线圆)
 
-
+![ConsistentHashing1](images/ConsistentHashing4.jpg)
 图4.新增一个节点的情况
 如图3.在NodeB宕机或摘除节点之后,存储数据对象ObjectB按照顺时针原则重新映射到NodeC服务器节点。
 如图4.在新增节点NodeD之后，存储数据对象ObjectB同样映射到了NodeD服务器节点，但是新增和摘除节点都没有影响到ObjectA和ObjectC,这就使得这种一致hash算法在增减节点时候并不会导致大面积请求资源的失效。
 并且随着服务器节点的增加，影响会越来越小。但是理想很丰满,现实却很骨感,当服务节点比较少的情况下,其实并不是如图3,图4这样分配均匀的，而是有可能出现数据倾斜的,下面拿摘除NodeA做举例：
 
-
+![ConsistentHashing1](images/ConsistentHashing5.jpg)
 图5.一致hash可能出现数据倾斜的情况
 
-
+![ConsistentHashing1](images/ConsistentHashing6.jpg)
 图6.NodeA宕机/摘除,大量存储数据映射到了NodeB
 如图5、6不难看出，当服务器较少并且数据出现一定倾斜的时候,假设NodeA出现宕机,这时候资源请求会重新映射到NodeB,那么NodeB机器的压力就会暴涨,在硬件资源有限的情况下,又怎么更好的处理这个问题呢？
 虚拟节点
 上面提到的过程基本上就是一致性hash的基本原理了,不过还有一个问题就是当服务器节点较少的时候,如何解决这个负载不均衡的问题，那就是虚拟节点。
 其实就是将每台物理机器,映射成n多个虚拟机器,再将这些虚拟机器hash之后映射到圆环上。
 
-
+![ConsistentHashing1](images/ConsistentHashing7.jpg)
 图7.虚拟机器和物理机器的映射
 
-
+![ConsistentHashing1](images/ConsistentHashing8.jpg)
 图8.生成多个虚拟节点进行映射，图中省略了hash过程
 数据定位到圆环算法是不变的，只是多了一步虚拟节点到实际节点的映射。
 你品,你细品一下!!
