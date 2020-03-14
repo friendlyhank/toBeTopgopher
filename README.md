@@ -5,7 +5,13 @@
  [go1.13.5版本源码解读](https://github.com/friendlyhank/go1.13.5-annotated)
 ##并发编程
 
-##分布式
+#数据结构
+待更新
+
+#设计模式
+待更新
+
+#分布式
 [一致Hash算法](distributed_system/hash一致性算法讲解.md)
 
 
