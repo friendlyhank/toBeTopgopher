@@ -4,8 +4,8 @@
 - [基础使用](https://github.com/friendlyhank/go-use)
 
 ## 源码相关
-
- - [go1.13.5版本源码解读](https://github.com/friendlyhank/go1.13.5-annotated)
+ - [go1.13.5版本源码注释](https://github.com/friendlyhank/go1.13.5-annotated)
+ - [go1.13.5版本源码讲解](https://github.com/friendlyhank/go-source/)
 
 ## 并发编程
 
