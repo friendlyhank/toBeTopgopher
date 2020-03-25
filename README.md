@@ -20,14 +20,14 @@
 待更新
 
 分布式
-- [一致Hash算法](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed_system/hash%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3.md)
+- [一致Hash算法](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed_system/hash一致性算法讲解.md)
 
 
 
 ## 中间件
 
 ## redis
-- [持久化]()
+- [持久化RDB和AOF](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis持久化RDB和AOF.md)
 
 ## 大数据
 
