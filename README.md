@@ -27,7 +27,7 @@
 ## 中间件
 
 ## redis
-待更新
+- [持久化]()
 
 ## 大数据
 
@@ -36,7 +36,6 @@
 
 
 ##缓存
-
 - [文章收录](https://github.com/friendlyhank/recruit)
 
 
