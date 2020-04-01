@@ -1,7 +1,7 @@
 ## Golang
 
 ## 基础知识
-- [基础使用](https://github.com/friendlyhank/go-use)
+- [Map入门](https://github.com/friendlyhank/go-use/blob/master/map/README.md)
 
 ## 源码相关
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
