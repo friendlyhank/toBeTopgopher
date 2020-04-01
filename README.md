@@ -30,6 +30,7 @@
 
 ## redis
 - [持久化RDB和AOF](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis持久化RDB和AOF.md)
+- [主从复制之配置](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis的主从复制之配置.md)
 
 ## 大数据
 
