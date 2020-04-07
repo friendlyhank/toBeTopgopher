@@ -6,7 +6,8 @@
 ## 源码相关
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
-
+- [channel讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/go_channel.md)
+- [select讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/golang_select.md)
 - [go1.13.5版本源码注释](https://github.com/friendlyhank/go1.13.5-annotated)
 ## 并发编程
 
