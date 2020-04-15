@@ -5,6 +5,7 @@
 - [Map入门](https://github.com/friendlyhank/go-use/blob/master/map/README.md)
 
 ### 源码相关
+- [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 - [channel讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/go_channel.md)
@@ -16,7 +17,7 @@
 ## 数据结构
 - [数组]()
 - [切片]()
-- [map]()
+- [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 
 ## 设计模式
