@@ -1,11 +1,30 @@
 ### 目录
-    - [语言](#语言)
-        - [Golang](#Golang)
-            - [基础知识](#基础知识)
-            - [源码相关](#源码相关)
+- [语言](#语言)
+    - [Golang](#Golang)
+	 	- [基础知识](#基础知识)
+	 	- [源码相关](#源码相关)
+	 	- [并发编程](#并发编程)
+	- [Golang开源相关](#Golang开源相关)
+	    - [Etcd分布式键值存储](#Etcd分布式键值存储)
+	    - [Groupcache缓存](#Groupcache缓存)
+	- [设计模式](#设计模式)
+    - [数据结构](#数据结构)
+- [分布式](#分布式)
+- [微服务](#微服务)
+- [容器编排](#容器编排)
+- [计算机原理](#计算机原理)
+- [藏经阁](#藏经阁)
+    - [中间件](#中间件)
+        - [redis](#redis)
+- [算法](#算法)
+- [大数据](#大数据)
+    - [Spark](#Spark)
+- [架构设计核心](#架构设计核心)
+    - [高并发](#高并发)
 
-#语言
-##Golang
+
+# 语言
+## Golang
 ### 基础知识
 - [Map入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/map.md)
 - [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/go_module初探.md)
@@ -20,15 +39,20 @@
 
 ### 并发编程
 
-### Other
+## Golang开源相关
 
-## 数据结构
+### Etcd分布式键值存储
+### Groupcache缓存
+
+## 设计模式
+
+# 数据结构
 - [数组]()
 - [切片]()
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 
-## 设计模式
+
 
 # 分布式
 - [一致Hash算法](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed_system/hash一致性算法讲解.md)
@@ -52,13 +76,8 @@
 - [sentinel客户端实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel客户端实现.md)
 - [sentinel实现原理](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel实现原理.md)
 
-### Other
 
-
-## Golang开源相关
-
-### ETCD分布式键值存储
-### Groupcache缓存
+# 算法
 
 # 大数据
 
