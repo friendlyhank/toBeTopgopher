@@ -1,9 +1,9 @@
-###目录
-    - [语言](#语言)
+### 目录
+    - [语言]
+        - [Golang]
+            - [基础知识](#基础知识)
+            - [源码相关](#源码相关)
 
-# 语言
-
-## Golang
 ### 基础知识
 - [Map入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/map.md)
 - [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/go_module初探.md)
