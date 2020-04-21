@@ -13,7 +13,9 @@
 - [select讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/golang_select.md)
 - [go1.13.5版本源码注释](https://github.com/friendlyhank/go1.13.5-annotated)
 
-## 并发编程
+### 并发编程
+
+### Other
 
 ## 数据结构
 - [数组]()
@@ -44,6 +46,9 @@
 - [sentinel api](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel_api.md)
 - [sentinel客户端实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel客户端实现.md)
 - [sentinel实现原理](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel实现原理.md)
+
+### Other
+
 
 ## Golang开源相关
 
