@@ -2,8 +2,8 @@
 
 ## Golang
 ### 基础知识
-- [Map入门](https://github.com/friendlyhank/go-use/blob/master/map/README.md)
-- [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/gobase/go_module初探.md)
+- [Map入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/map.md)
+- [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/go_module初探.md)
 
 ### 源码相关
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
