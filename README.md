@@ -91,7 +91,7 @@
 - [sentinel api](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel_api.md)
 - [sentinel客户端实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel客户端实现.md)
 - [sentinel实现原理](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel实现原理.md)
-
+- [redis集群](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis集群.md)
 # 大数据
 
 ### Spark
