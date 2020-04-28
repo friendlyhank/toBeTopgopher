@@ -9,6 +9,10 @@
 	    - [Groupcache缓存](#Groupcache缓存)
 	- [设计模式](#设计模式)
     - [数据结构](#数据结构)
+- [算法](#算法)
+- [建模](#建模)
+- [架构设计核心](#架构设计核心)
+    - [高并发](#高并发)
 - [分布式](#分布式)
 - [微服务](#微服务)
 - [容器编排](#容器编排)
@@ -16,11 +20,8 @@
 - [藏经阁](#藏经阁)
     - [中间件](#中间件)
         - [redis](#redis)
-- [算法](#算法)
 - [大数据](#大数据)
     - [Spark](#Spark)
-- [架构设计核心](#架构设计核心)
-    - [高并发](#高并发)
 
 
 # 语言
@@ -52,7 +53,19 @@
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 
+# 算法
 
+#建模
+
+# 架构设计核心
+## 高并发
+
+### 应用级缓存
+- [缓存使用模式](https://juejin.im/post/5af5b2c36fb9a07ac65318bd)
+
+
+### 多级缓存
+- [深入理解分布式之数据库和缓存双写一致性方案解析](https://juejin.im/post/5b923de95188255c8e725c18)
 
 # 分布式
 - [一致Hash算法](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed_system/hash一致性算法讲解.md)
@@ -76,25 +89,6 @@
 - [sentinel客户端实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel客户端实现.md)
 - [sentinel实现原理](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel实现原理.md)
 
-
-# 算法
-
 # 大数据
 
 ### Spark
-
-
-# 架构设计核心
-## 高并发
-
-### 应用级缓存
-- [缓存使用模式](https://juejin.im/post/5af5b2c36fb9a07ac65318bd)
-
-
-### 多级缓存
-- [深入理解分布式之数据库和缓存双写一致性方案解析](https://juejin.im/post/5b923de95188255c8e725c18)
-
-
-
-
-
