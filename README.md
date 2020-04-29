@@ -1,8 +1,8 @@
 ### 目录
 - [语言](#语言)
     - [Golang](#Golang)
-	 	- [基础知识](#基础知识)
-	 	- [源码相关](#源码相关)
+	 	- [核心知识](#Golang核心知识)
+	 	- [源码知识](#Golang源码知识)
 	 	- [并发编程](#并发编程)
 	- [Golang开源相关](#Golang开源相关)
 	    - [Etcd分布式键值存储](#Etcd分布式键值存储)
@@ -20,17 +20,19 @@
 - [藏经阁](#藏经阁)
     - [中间件](#中间件)
         - [redis](#redis)
+           - [核心知识](#redis核心知识)
+           - [源码知识](#redis源码知识)
 - [大数据](#大数据)
     - [Spark](#Spark)
 
 
 # 语言
 ## Golang
-### 基础知识
+### Golang核心知识
 - [Map入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/map.md)
 - [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/go_module初探.md)
 
-### 源码相关
+### Golang源码知识
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
@@ -83,6 +85,8 @@
 ## 中间件
 
 ### redis
+
+#### redis核心知识
 - [redis分布式锁官方解读](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis分布式锁官方解读.md)
 - [持久化RDB和AOF](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis持久化RDB和AOF.md)
 - [主从复制之配置](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis的主从复制之配置.md)
@@ -92,6 +96,10 @@
 - [sentinel客户端实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel客户端实现.md)
 - [sentinel实现原理](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/sentinel实现原理.md)
 - [redis集群](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis集群.md)
+
+#### redis源码知识
+- [redis5.0源码动态字符串SDS](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis5.0源码动态字符串SDS.md)
+
 # 大数据
 
 ### Spark
