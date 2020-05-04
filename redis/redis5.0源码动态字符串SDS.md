@@ -2,7 +2,7 @@
 在redis数据库里Redis的键值对、缓冲区(buffer):AOF模块中的AOF缓冲区，以及客户端状态的输入缓冲区，都是SDS实现的。
 
 **sds与c字符串的异同：**
-| C字符串 |SDS|
+| C字符串 |SDS  |
 |--|--|
 |获取字符串长度的复杂度为O(N)  | 获取字符串长度的复杂度为O(1) |
 |API是不安全的，可能会造成缓冲区溢出(手动分配)  | API是安全的，不会造成缓冲区溢出(预分配)|
@@ -19,11 +19,12 @@ typedef char *sds;
 sds字符串根据字符串的长度，划分了五种结构体sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64,分别对应的类型为SDS_TYPE_5、SDS_TYPE_8、SDS_TYPE_16、SDS_TYPE_32、SDS_TYPE_64
 
 每个sds 所能存取的最大字符串长度为：
-sdshdr5最大为32(2^5)
-sdshdr8最大为0xff(2^8-1)
-sdshdr16最大为0xffff(2^16-1)
-sdshdr32最大为0xffffffff(2^32-1)
-sdshdr64最大为(2^64-1)
+
+ - sdshdr5最大为32(2^5)
+ - sdshdr8最大为0xff(2^8-1)
+ - sdshdr16最大为0xffff(2^16-1)
+ - sdshdr32最大为0xffffffff(2^32-1)
+ - sdshdr64最大为(2^64-1)
 
 **sds结构体**
 sds每个类型的结构体大体相同,除了sdshdr5是没有len、alloc的，其他的结构体就只是len和alloc定义数据类型上的区别。
@@ -208,5 +209,7 @@ sds sdsRemoveFreeSpace(sds s) {
 ```
  1. 重新获取最新的sds类型，此时为了节省空间可以获得更小的sds的数据类型
  2. 如果sds的类型未改变,重新分配内存
- 4. 如果sds类型发生改变,申请新的内存并复制旧数据到新的内存，然后释放旧数据。
+ 3. 如果sds类型发生改变,申请新的内存并复制旧数据到新的内存，然后释放旧数据。
 
+更多系统学习欢迎关注github:
+[go成神之路](https://github.com/friendlyhank/toBeTopgopher)
