@@ -10,6 +10,8 @@
 |只能保存文本数据 | 可以保存文本或者二进制数据|
 |可以使用所有<string.h>库中的函数 | 可以使用一部分<string.h>库中的函数|
 
+SDS保留c字符串以空字符的惯例，同时SDS实现两种优化策略就是空间预分配和惰性空间释放。
+
 ## 动态字符串
 redis的sds结构实现字符串的基础。具体的文件有两个sds.c sds.h
 **sds定义**
@@ -45,7 +47,6 @@ struct __attribute__ ((__packed__)) sdshdr8 {
  - alloc表示字符串的容量
  - flags表示字符串类型标记SDS_TYPE_5、SDS_TYPE_8、SDS_TYPE_16、SDS_TYPE_32、SDS_TYPE_64
  - buf[]表示柔性数组。在分配内存的时候会指向字符串的内容
-
 ## 创建sds
 ```c
 sds sdsnewlen(const void *init, size_t initlen) {
@@ -111,6 +112,30 @@ sds sdsnewlen(const void *init, size_t initlen) {
  4. 复制数据
 
 ## 空间预分配
+空间预分配用于优化SDS字符串增长的操作，如果redis执行追加操作append,那么在执行命令之前，程序不仅会为SDS分配必须的空间，还会为SDS分配额外的空间。
+```c
+//将给定c字符串拼接到SDS字符串尾部
+sds sdscat(sds s, const char *t) {
+    return sdscatlen(s, t, strlen(t));
+}
+//将给定SDS字符串拼接到SDS字符串尾部
+sds sdscatsds(sds s, const sds t) {
+    return sdscatlen(s, t, sdslen(t));
+}
+```
+```c
+sds sdscatlen(sds s, const void *t, size_t len) {
+    size_t curlen = sdslen(s);
+
+    s = sdsMakeRoomFor(s,len);
+    if (s == NULL) return NULL;
+    memcpy(s+curlen, t, len);
+    sdssetlen(s, curlen+len);
+    s[curlen+len] = '\0';
+    return s;
+}
+```
+sdscat、sdscatsds是sds字符串的拼接函数，在拼接之前会检查是否需要扩容，如果需要扩容，则还会预分配空间，具体函数sdsMakeRoomFor。
 ```c
 sds sdsMakeRoomFor(sds s, size_t addlen) {
 	 void *sh, *newsh;
@@ -168,7 +193,7 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
  5. 扩容之后，如果sds的类型未改变,重新分配内存
  6. 扩容之后，如果sds类型发生改变,申请新的内存并复制旧数据到新的内存，然后释放旧数据。
 
-## 惰性空间释放
+相对的有增加空间就有多余空间释放的函数,sdsRemoveFreeSpace会释放多余的空间。
 ```c
 sds sdsRemoveFreeSpace(sds s) {
    void *sh, *newsh;
@@ -210,6 +235,38 @@ sds sdsRemoveFreeSpace(sds s) {
  1. 重新获取最新的sds类型，此时为了节省空间可以获得更小的sds的数据类型
  2. 如果sds的类型未改变,重新分配内存
  3. 如果sds类型发生改变,申请新的内存并复制旧数据到新的内存，然后释放旧数据。
+
+## 惰性空间释放
+惰性空间释放用于优化SDS字符串缩短的操作，如果redis执行截断操作trim,那么在执行命令之前，程序不会立即重分配SDS空间来释放多余的空间，而是用len记录已使用的空间，剩余空间供下次重用。
+
+```c
+sds sdstrim(sds s, const char *cset) {
+    char *start, *end, *sp, *ep;
+    size_t len;
+
+    sp = start = s;
+    ep = end = s+sdslen(s)-1;
+    while(sp <= end && strchr(cset, *sp)) sp++;
+    while(ep > sp && strchr(cset, *ep)) ep--;
+    len = (sp > ep) ? 0 : ((ep-sp)+1);
+    if (s != sp) memmove(s, sp, len);
+    s[len] = '\0';
+    sdssetlen(s,len);
+    return s;
+}
+```
+
+## API
+| 函数|作用|
+|--|--|
+|sdsnew|创建一个包含给定c字符串的SDS|
+|sdsHdrSize|获取header(初始化结构体)需要空间大小|
+|sdsReqType|获取sds类型|
+|sdsavail|返回SDS的未使用空间的字节数|
+|sdslen|返回SDS的已使用空间的字节数|
+|sdscat|将给定c字符串拼接到SDS字符串尾部|
+|sdscatsds|将给定SDS字符串拼接到SDS字符串尾部|
+|sdsfree|释放给定的SDS|
 
 更多系统学习欢迎关注github:
 [go成神之路](https://github.com/friendlyhank/toBeTopgopher)
