@@ -10,6 +10,8 @@
 	- [设计模式](#设计模式)
     - [数据结构](#数据结构)
 - [算法](#算法)
+- [数据库](#数据库)
+    - [mysql](#mysql)
 - [建模](#建模)
 - [架构设计核心](#架构设计核心)
     - [高并发](#高并发)
@@ -53,10 +55,14 @@
 - [数组]()
 - [切片]()
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
-- [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
+- [redis6.0源码双端链表](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码双端链表.md)
+- [环形双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 
 # 算法
 
+# 数据库
+## mysql
+- [慢查询日志开启](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/mysql慢查询日志开启.md)
 #建模
 
 # 架构设计核心
