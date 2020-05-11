@@ -178,13 +178,3 @@ listNode *listSearchKey(list *list, void *key)
     return NULL;
 }
 ```
-
-## list API
-| 函数|作用|
-|--|--|
-| listCreate | 创建新链表 |
-| listRelease | 释放给定链表，以及链表中的所有节点 |
-
-
-
-
