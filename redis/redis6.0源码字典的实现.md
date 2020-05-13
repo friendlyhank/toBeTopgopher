@@ -57,7 +57,7 @@ redis字典实现是使用链地址法，哈希算法具体方式为：
 	hash = (ht)->type->hashFunction(key)
 	```
  
- 2. 通过hash与sizemask的位运算计算出哈希table数组(有些语言也叫桶)对应的索引
+ 2. 通过hash与sizemask的位运算计算出哈希table数组(桶)对应的索引
 	```c
 	h = dictHashKey(ht, key) & ht->sizemask;
 	```
@@ -107,7 +107,7 @@ static void _dictRehashStep(dict *d) {
 int dictRehash(dict *d, int n) {
     int empty_visits = n*10; /* Max number of empty buckets to visit. */
     if (!dictIsRehashing(d)) return 0;
-
+	//进行n步rehash
     while(n-- && d->ht[0].used != 0) {
         dictEntry *de, *nextde;
         //防止rehashidx越界
@@ -147,10 +147,14 @@ int dictRehash(dict *d, int n) {
 ```
  1. 从ht[0]根据rehashidx遍历,获得ht[0]表中的哈希节点信息
  2. 每次遍历出哈希节点信息就把它迁移到ht[1]
- 3. 如果ht[0]中没有hash节点，把ht[1]设置称ht[0]
- 4. 重置ht[1]
+ 3. 如果ht[0]中没有hash节点，把ht[1]设置成ht[0],并重置ht[1]
+ 
 
 扩展和缩容表实际上不是一次完成的，因为考虑键值对可能非常大，如果一次完成可能会非常消耗性能。
+
+**渐进触发rehash**
+ - 在查找、添加等更新操作的时候会触发单步rehash,单步rehash表示会rehash一次某个不为空的桶上的所有链表节点。
+ - 如果字典在rehash状态中，但是如果服务器长时间没执行命令，字典rehash就没办法完成，为了避免这种情况，redis会尝试花费1毫秒时间去执行100步主动rehash,具体执行函数incrementallyRehash
 
 因为rehash是渐进式的，所以也会引发问题是在删除、查找、更新等操作的时候都在两个哈希表中进行。
 另外在rehash期间，新添加的字典的键值对会保存到ht[1]里面，而ht[0]则不会进行任何添加操作，保证ht[0]只减不增，随着rehash操作执行最终变为空表。
@@ -336,9 +340,9 @@ dictEntry *dictNext(dictIterator *iter)
     return NULL;
 }
 ```
-
- 1. 如果字典正在rehash,说明正在使用一号表，设置节点列表为一号表ht[1]
- 2. 遍历链表直接返回hash节点信息
+ 1. 判断当前table索引的链表是否迭代完，如果未迭代完，继续在当前table索引迭代，如果迭代完成table索引加一。
+ 2. 如果字典正在rehash,说明正在使用一号表，设置节点列表为一号表ht[1]
+ 3. 遍历链表直接返回hash节点信息
 
 更多讲解,欢迎关注我的github:
 [go成神之路](https://github.com/friendlyhank/toBeTopgopher)
