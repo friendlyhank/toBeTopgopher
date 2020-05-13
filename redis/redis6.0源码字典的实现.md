@@ -48,10 +48,25 @@ typedef struct dictEntry {
 ```
 哈希表每个节点都保存着一个键值对，key就是键值对的键，v属性就是对应键值对的值，v可以是一个指针也可以是uint64_t,整数也可以是int64_t整数。
 next是一个链表，指向着下一个哈希表节点，这个指针可以将多个哈希值相同的键值对连接在一起，以此来解决哈希冲突问题。
-![](https://img-blog.csdnimg.cn/20200513095946359.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzM3NzMxMDU2,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20200513103428416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzM3NzMxMDU2,size_16,color_FFFFFF,t_70)
 ### 哈希算法
+redis字典实现是使用链地址法，哈希算法具体方式为：
 
-字典的方式一般有两种
+ 1. 计算键key的hash值
+	```c
+	hash = (ht)->type->hashFunction(key)
+	```
+ 
+ 2. 通过hash与sizemask的位运算计算出哈希table数组(有些语言也叫桶)对应的索引
+	```c
+	h = dictHashKey(ht, key) & ht->sizemask;
+	```
+ 3. 插入的时候，可能会出现键被分配到同一个哈希表数组的索引上，引发哈希冲突，解决哈希冲突的方式是每次把新增节点往单向链表的头部插入，每个节点会记录下一个节点的信息next。
+ 4. 每次插入的时候，会检查是否需要是否需要扩容，扩容由哈希因子决定的,负载因子=哈希表已保存的节点数/哈希表大小
+	```c
+	d->ht[0].used/d->ht[0].size
+	```
+ 5. 扩容和收缩通过rehash完成,扩容或收缩表需要把ht[0]的所有键rehash到ht[1]里面，考虑服务器性能原因rehash并不会一次性地把所有ht[0]所有键rehash到ht[1]里，而是渐进式、分多次的完成。
 
 ### 字典的创建
 ```c
@@ -325,3 +340,5 @@ dictEntry *dictNext(dictIterator *iter)
  1. 如果字典正在rehash,说明正在使用一号表，设置节点列表为一号表ht[1]
  2. 遍历链表直接返回hash节点信息
 
+更多讲解,欢迎关注我的github:
+[go成神之路](https://github.com/friendlyhank/toBeTopgopher)
