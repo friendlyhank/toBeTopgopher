@@ -108,7 +108,7 @@
 #### redis源码知识
 - [redis6.0源码动态字符串SDS](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码动态字符串SDS.md)
 - [redis6.0源码双端链表](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码双端链表.md)
-
+- [redis6.0源码字典的实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码字典的实现.md)
 
 # 大数据
 
