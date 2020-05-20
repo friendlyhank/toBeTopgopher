@@ -66,6 +66,8 @@
 - [join连接查询](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/mysql_join.md)
 - [SQL优化连弹一之慢查询日志开启](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹一之慢查询日志开启.md)
 - [SQL优化连弹二之show status](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹二之show_status.md)
+- [SQL优化连弹三之explain](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹三之explain.md)
+
 # 建模
 
 # 架构设计核心
