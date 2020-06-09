@@ -69,6 +69,7 @@
 - [SQL优化连弹三之explain](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹三之explain.md)
 - [SQL优化连弹四之show profile](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹四之show_profile.md)
 - [SQL优化连弹五之使用索引和不使用索引的典型场景](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹五之使用索引和不使用索引的典型场景.md)
+- [Innodb锁讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/Innodb锁讲解.md)
 - [分布式事务XA](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/mysql分布式事务XA.md)
 # 建模
 
