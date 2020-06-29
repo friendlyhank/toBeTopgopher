@@ -93,6 +93,7 @@
 ## Kubernetes
 
 # 计算机原理
+- [原码、反码、补码](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/原码、反码、补码.md) 
 
 # 藏经阁
 
