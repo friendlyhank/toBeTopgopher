@@ -94,6 +94,7 @@
 
 # 计算机原理
 - [原码、反码、补码](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/原码、反码、补码.md) 
+- [位运算与逻辑运算](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/位运算与逻辑运算.md) 
 
 # 藏经阁
 
