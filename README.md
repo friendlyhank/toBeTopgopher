@@ -15,6 +15,7 @@
 - [数据库](#数据库)
     - [mysql](#mysql)
 - [计算机原理](#计算机原理)
+- [汇编](#汇编)
 - [建模](#建模)
 - [架构设计核心](#架构设计核心)
     - [高并发](#高并发)
@@ -104,6 +105,9 @@
 - [进程、线程、协程](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/进程、线程、协程.md) 待完善
 - [并发与并行](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/并发和并行.md) 待完善
 - [大端序和小端序]() 待完善
+
+#汇编
+- [plan9汇编入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/assemble/plan9汇编入门.md)
 
 # 藏经阁
 
