@@ -101,8 +101,9 @@
 # 计算机原理
 - [原码、反码、补码](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/原码、反码、补码.md) 
 - [位运算与逻辑运算](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/位运算与逻辑运算.md) 
-- [进程、线程、协程](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/进程、线程、协程.md) 
-- [并发与并行](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/并发和并行.md) 
+- [进程、线程、协程](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/进程、线程、协程.md) 待完善
+- [并发与并行](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/并发和并行.md) 待完善
+- [大端序和小端序]() 待完善
 
 # 藏经阁
 
