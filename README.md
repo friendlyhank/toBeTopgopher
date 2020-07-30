@@ -131,7 +131,7 @@
 - [redis6.0源码双端链表](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码双端链表.md)
 - [redis6.0源码字典的实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码字典的实现.md)
 - [redis6.0源码跳跃表](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码跳跃表.md)
-
+- [redis6.0源码整数集合](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码整数集合.md)
 # 大数据
 
 ### Spark
