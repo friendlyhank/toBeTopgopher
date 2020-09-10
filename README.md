@@ -29,6 +29,7 @@
 			- [redis核心知识](#redis核心知识)
 			- [redis源码知识](#redis源码知识)
 		- [etcd](#etcd)
+		    - [etcd入门](#etcd核心知识)
 			- [etcd核心知识](#etcd核心知识)
 			- [etcd源码知识](#etcd源码知识)
 	- [消息队列](#消息队列)
@@ -137,8 +138,9 @@
 - [redis6.0源码整数集合](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码整数集合.md)
 
 ### etcd
+#### etcd入门
+- [etcd的v3基准测试](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/etcd的v3基准测试.md)
 #### etcd核心知识
-
 #### etcd源码知识
 
 ## 消息队列
