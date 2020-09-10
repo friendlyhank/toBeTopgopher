@@ -62,7 +62,7 @@
 - [并发与并行](https://github.com/friendlyhank/toBeTopgopher/blob/master/computer/并发和并行.md) 待完善
 - [大端序和小端序]() 待完善
 
-#汇编
+# 汇编
 - [plan9汇编入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/assemble/plan9汇编入门.md)
 
 # 数据结构
