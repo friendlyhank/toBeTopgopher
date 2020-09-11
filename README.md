@@ -139,8 +139,10 @@
 
 ### etcd
 #### etcd入门
-- [etcd的v3基准测试](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/etcd的v3基准测试.md)
+- [etcd安装](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/etcdbase/etcd安装.md)
+- [etcd的v3基准测试](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/etcdbase/etcd的v3基准测试.md)
 #### etcd核心知识
+- [etcd配置文件](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/etcdcore/etcd配置文件.md)
 #### etcd源码知识
 
 ## 消息队列
