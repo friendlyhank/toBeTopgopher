@@ -91,9 +91,9 @@ func (s *EtcdServer) RaftHandler() http.Handler { return s.r.transport.Handler()
  2. Peer接口是集群具体节点的抽象，在分布式系统中的通信说到底就是节点之间的通信。
  3. 在往下一层网络etcd针对不同的消息类型所携带的数据大小不同，分出两种不同的传输通道stream和pipeline，各自特点：
  		 - Stream类型通道：点到点之间维护HTTP长连接，主要传输数据量较小、比较频繁的的数据，例如追加日志、心跳等。
- 		 - Pipeline类型通道：点到点之间短链接，用完即关闭，主要传输数据量较大、发送频率较低的消息，例如快照消息等。
+ 		 - Pipeline类型通道：点到点之间短连接，用完即关闭，主要传输数据量较大、发送频率较低的消息，例如快照消息等。
  Stream消息通道是在节点启动后，主动与集群中的其他节点建立的，每个Stream消息通道有2个关联的后台goroutine,其中一个启动[streamReader](https://github.com/etcd-io/etcd/blob/master/server/etcdserver/api/rafthttp/stream.go)主动发起**dial**建立关联的HTTP连接，并从连接上读取数据，另外一个后台goroutine启动[streamWriter](https://github.com/etcd-io/etcd/blob/master/server/etcdserver/api/rafthttp/stream.go)在建立起连接之后，负责发送数据。
- Pipeline消息通道发起连接的过程和读取数据过程与Stream是共享的，只是在发送消息的时候会根据消息的类型，启用4个线程去发送数据。
+ Pipeline消息通道则是使用短连接，启用4个线程去发送数据。
  4.etcd网络层的底层依赖围绕golang net包来实现的。
 
 最后，本文只是对etcd网络层的如何建立连接和收发数据的过程做大致的讲解，后面会针对性的做详细的分析。
