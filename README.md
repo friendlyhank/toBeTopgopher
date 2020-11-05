@@ -148,6 +148,8 @@
 - [etcd网络层源码分析(二)——Transporter接口实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/source/etcd网络层源码分析(二)——Transporter接口实现.md)
 - [etcd网络层源码分析(三)——Peer接口实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/source/etcd网络层源码分析(三)——Peer接口实现.md)
 - [etcd网络层(四)——pipeline通道实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/source/etcd网络层(四)——pipeline通道实现.md)
+- [etcd网络层源码分析(四)——stream通道实现](https://github.com/friendlyhank/toBeTopgopher/blob/master/etcd/source/etcd网络层源码分析(四)——stream通道实现.md)
+
 ## 消息队列
 ### kafka
 
