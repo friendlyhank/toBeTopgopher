@@ -211,7 +211,7 @@ func (h *streamHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		peerID:  from,
 	}
 	p.attachOutgoingConn(conn)//建立连接，将outgoingConn实例与对应的streamWriter实例绑定
-	<-c.closeNotify()
+	<-c.closeNotify()//阻塞等待消息发送,如果不阻塞了说明HTTP长连接被关闭
 }
 ```
 由于stream通道是长连接，当获取到对端请求后，将连接封装成outgoingConn实例，有streamWriter发送心跳来维护长连接。并给对端响应状态码。

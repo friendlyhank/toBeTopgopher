@@ -13,14 +13,10 @@
 - [网络](#网络)
     - [HTTP](#HTTP)
 	- [TCP](#TCP)
-- [架构设计核心](#架构设计核心)
-    - [高并发](#高并发)
-	- [选举](#选举)
-	- [限流](#限流)
-	- [负载均衡](#负载均衡)
-	- [缓存](#缓存)
-		- [应用级缓存](#多级缓存)
 - [分布式](#分布式)
+    - [高并发原则](#高并发原则)
+	- [高可用原则](#高可用原则)
+	- [业务设计原则](#业务设计原则)
 - [藏经阁](#藏经阁)
     - [关系型数据库](#关系型数据库)
         - [mysql](#mysql)
@@ -86,23 +82,12 @@
 
 ## TCP
 
-# 架构设计核心
-## 高并发
-
-## 选举
-
-## 限流
-
-## 负载均衡
-
-## 缓存
-### 应用级缓存
-- [缓存使用模式](https://juejin.im/post/5af5b2c36fb9a07ac65318bd)
-### 多级缓存
-- [深入理解分布式之数据库和缓存双写一致性方案解析](https://juejin.im/post/5b923de95188255c8e725c18)
-
 # 分布式
-- [一致Hash算法](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed_system/hash一致性算法讲解.md)
+## 高并发原则
+- [无状态和有状态](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed/无状态和有状态.md)
+- [hash一致性算法讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed/hash一致性算法讲解.md)
+## 高可用原则
+## 业务设计原则
 
 # 藏经阁
 # 关系型数据库
@@ -157,6 +142,12 @@
 ### Kubernetes
 
 ## 微服务
+
+## 缓存
+### 应用级缓存
+- [缓存使用模式](https://juejin.im/post/5af5b2c36fb9a07ac65318bd)
+### 多级缓存
+- [深入理解分布式之数据库和缓存双写一致性方案解析](https://juejin.im/post/5b923de95188255c8e725c18)
 
 # 大数据
 ### Spark
