@@ -16,6 +16,7 @@
 - [分布式](#分布式)
     - [高并发原则](#高并发原则)
 	- [高可用原则](#高可用原则)
+	- [负载均衡](#负载均衡)
 	- [业务设计原则](#业务设计原则)
 - [藏经阁](#藏经阁)
     - [关系型数据库](#关系型数据库)
@@ -41,6 +42,7 @@
 ### Golang核心知识
 - [Map入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/map.md)
 - [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/go_module初探.md)
+- [golang的struct tag](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/golang的struct_tag.md)
 
 ### Golang源码知识
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
@@ -85,9 +87,24 @@
 # 分布式
 ## 高并发原则
 - [无状态和有状态](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed/无状态和有状态.md)
-- [hash一致性算法讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed/hash一致性算法讲解.md)
+### 服务化
+### 消息队列
+### 缓存银弹
+
 ## 高可用原则
+### 负载均衡
+- [hash一致性算法讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/distributed/hash一致性算法讲解.md)
+###  隔离
+### 限流
+### 切流量
+### 可回滚
+
 ## 业务设计原则
+### 防重设计
+### 幂等设计
+### 状态与状态机
+### 后台系统审批化
+### 文档和注释
 
 # 藏经阁
 # 关系型数据库
