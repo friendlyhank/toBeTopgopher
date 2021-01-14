@@ -110,6 +110,200 @@ type UserInfo struct{
 }
 ```
 
+## 临时重定义tag
+有时候在编码过程中,因为数据差异等问题，我们可以临时重新定义tag，重定义几乎包含tag的操作,其中包括:忽略空字段、添加字段、忽略字段、甚至拆分成多个或合并结构体等。
+
+下面以忽略空字段举例,其他情况基本类似。在原结构体中address未添加忽略空字段的tag,但在序列化的时候重新定义address的标签为:当address信息未填写的时候，序列化时忽略该字段。
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type UserInfo struct{
+	Name string `json:"name"`
+	Age int `json:"age,string"`
+	Address string `json:"address"`
+}
+
+func main(){
+	user := UserInfo{Name: "张三",Age:18}
+	b,_ := json.Marshal(struct {
+		UserInfo
+		Address string `json:"address,omitempty"`
+	}{
+		UserInfo:user,
+	})
+	fmt.Println(string(b))
+}
+```
+```go
+{"name":"张三","age":"18"}
+```
+这种用法使用场景较少，会损耗一些性能，如果tag标签重定义的比较散乱，会引起未知错误的风险，维护起来也非常麻烦，除了特殊情况，一般不会使用。
+
+## json.Number
+(1)如果接收的不知道是string、float64、int64,则可以用到json.Number,这种情况比较少,只是想说明json.Number在输入和输出转化这三种数据的时候都是非常方便的。
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+type UserInfo struct{
+	Name string `json:"name"`
+	Age int `json:"age"`
+	Address string `json:"address"`
+}
+
+func main(){
+	str := `{"name":"张三","age":18,"address":"广东省广州市天河区"}`
+	user := &UserInfo{}
+	err := json.Unmarshal([]byte(str),user)
+	if err != nil{
+		panic(err)
+	}
+	fmt.Printf("%+v",user)
+
+	str1 := `{"name":"张三","age":"18","address":"广东省广州市天河区"}`
+	user1 := &UserInfo{}
+	err = json.Unmarshal([]byte(str1),user1)
+	if err != nil{
+		print(err)
+	}
+	fmt.Printf("%+v",user1)
+}
+```
+
+age给到的是string类型，无法解析成我们想要的数据:
+```go
+&{Name:张三 Age:18 Address:广东省广州市天河区}
+&{Name:张三 Age:0 Address:广东省广州市天河区}
+```
+
+改进:
+注意我们只需把age int改成json.Number的内置类型
+```go
+type UserInfo struct{
+	Name string `json:"name"`
+	Age json.Number `json:"age"`
+	Address string `json:"address"`
+}
+```
+
+(2)对于未定义的数据类型
+用于interface类型编解码过程数值会被默认解析成float64类型，如果数值较大会精度丢失的问题
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+	s := `{"idno":9223372036854775807}`
+
+	d := make(map[string]interface{})
+	err := json.Unmarshal([]byte(s), &d)
+	if err != nil {
+		panic(err)
+	}
+
+	s2, err := json.Marshal(d)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(s2))
+}
+```
+
+改进方法:
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+)
+
+func main() {
+	s := `{"idno":9223372036854775807}`
+	decoder := json.NewDecoder(strings.NewReader(s))
+	decoder.UseNumber()
+	d := make(map[string]interface{})
+	err := decoder.Decode(&d)
+	if err != nil{
+		panic(err)
+	}
+
+	s2,err := json.Marshal(d)
+	if err != nil{
+		panic(err)
+	}
+	fmt.Println(string(s2))
+}
+```
+
+## json.RawMessage
+有些json数据是根据按照某些字段去解析的，这时候就要先接收最原始的编解码数据，然后再做进一步的解析,根据官方案例：
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+func main() {
+	type Color struct {
+		Space string
+		Point json.RawMessage // delay parsing until we know the color space
+	}
+	type RGB struct {
+		R uint8
+		G uint8
+		B uint8
+	}
+	type YCbCr struct {
+		Y  uint8
+		Cb int8
+		Cr int8
+	}
+
+	var j = []byte(`[
+	{"Space": "YCbCr", "Point": {"Y": 255, "Cb": 0, "Cr": -10}},
+	{"Space": "RGB",   "Point": {"R": 98, "G": 218, "B": 255}}
+]`)
+	var colors []Color
+	err := json.Unmarshal(j, &colors)
+	if err != nil {
+		log.Fatalln("error:", err)
+	}
+
+	for _, c := range colors {
+		var dst interface{}
+		switch c.Space {
+		case "RGB":
+			dst = new(RGB)
+		case "YCbCr":
+			dst = new(YCbCr)
+		}
+		err := json.Unmarshal(c.Point, dst)
+		if err != nil {
+			log.Fatalln("error:", err)
+		}
+		fmt.Println(c.Space, dst)
+	}
+}
+```
+
 ### 如何获取键值对的tag
 ```go
 type UserInfo struct{
