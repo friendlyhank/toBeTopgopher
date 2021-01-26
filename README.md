@@ -50,6 +50,7 @@
 - [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 - [channel讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/go_channel.md)
 - [select讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang_select.md)
+- [golang的json源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang的json源码解析.md)
 - [go1.13.5版本源码注释](https://github.com/friendlyhank/go1.13.5-annotated)
 
 ### 并发编程
