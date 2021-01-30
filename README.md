@@ -68,7 +68,7 @@
 
 # 数据结构
 - [数组]()
-- [切片]()
+- [切片](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之slice切片源码解析.md)
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [redis6.0源码双端链表](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码双端链表.md)
 - [环形双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
