@@ -1,6 +1,6 @@
-﻿golang的切片实现是在包runtime/slice.go
-## 定义
-切片定义包含array指向数组的指针，是一块连续的内存空间,len代表切片的长度,cap代表切片的容量,cap总是大于等于len。
+﻿切片作为常用的数据结构体之一,切片实际上是数组的抽象，也称动态数组，顾名思义，它自带扩容的机制，因为其灵活性，相对数组来说被运用的更加广泛。
+## 结构体
+golang的切片实现是在包runtime/slice.go,切片结构体包含array指向数组的指针，是一块连续的内存空间,len代表切片的长度,cap代表切片的容量,cap总是大于等于len。
 ```go
 type slice struct {
 	array unsafe.Pointer
@@ -9,6 +9,7 @@ type slice struct {
 }
 ```
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210129150810334.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L20wXzM3NzMxMDU2,size_16,color_FFFFFF,t_70)
+从上图可以看出,切片是在数组的基础上抽象了一层，底层是对数组的引用,当切片发生扩容时,底层数组发生改变，而对于上层切片来说是没有变化的。
 ## make初始化
 先来看看slice的初始化,slice的初始化可以通过make关键字,传入type、len、cap。
 
@@ -94,19 +95,19 @@ func growslice(et *_type, old slice, cap int) slice {
 	// For sys.PtrSize, compiler will optimize division/multiplication into a shift by a constant.
 	// For powers of 2, use a variable shift.
 	switch {
-	case et.size == 1://元素所占的字节数为1
+	case et.size == 1: //元素所占的字节数为1
 		lenmem = uintptr(old.len)
 		newlenmem = uintptr(cap)
 		capmem = roundupsize(uintptr(newcap))//向上取整分配内存
 		overflow = uintptr(newcap) > maxAlloc
 		newcap = int(capmem)
-	case et.size == sys.PtrSize://元素所占的字节数为8个字节
+	case et.size == sys.PtrSize: //元素所占的字节数为8个字节
 		lenmem = uintptr(old.len) * sys.PtrSize
 		newlenmem = uintptr(cap) * sys.PtrSize
 		capmem = roundupsize(uintptr(newcap) * sys.PtrSize)
 		overflow = uintptr(newcap) > maxAlloc/sys.PtrSize
 		newcap = int(capmem / sys.PtrSize)
-	case isPowerOfTwo(et.size)://元素所占的字节数为2的倍数
+	case isPowerOfTwo(et.size): //元素所占的字节数为2的倍数
 		var shift uintptr
 		//根据元素的字节数计算出位运算系数
 		if sys.PtrSize == 8 {
@@ -205,4 +206,6 @@ func slicecopy(toPtr unsafe.Pointer, toLen int, fmPtr unsafe.Pointer, fmLen int,
 ## 总结
  1. 在扩容过程中,切片的地址不会被改变,改变的是切片的底层数组array,会申请一块新的内存地址替换。
  2. slice没有缩小容量的操作
+
+更多欢迎关注[go成神之路](https://github.com/friendlyhank/toBeTopgopher)
 

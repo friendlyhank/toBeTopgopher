@@ -45,6 +45,7 @@
 - [golang的struct tag](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/golang的struct_tag.md)
 
 ### Golang源码知识
+- [golang之array数组源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之array数组源码解析.md)
 - [golang之slice切片源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之slice切片源码解析.md)
 - [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
