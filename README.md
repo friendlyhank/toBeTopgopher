@@ -45,13 +45,13 @@
 - [golang的struct tag](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/golang的struct_tag.md)
 
 ### Golang源码知识
-- [golang之array数组源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之array数组源码解析.md)
-- [golang之slice切片源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之slice切片源码解析.md)
-- [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
-- [双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 - [channel讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/go_channel.md)
 - [select讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang_select.md)
+- [golang之array数组源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之array数组源码解析.md)
+- [golang之slice切片源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之slice切片源码解析.md)
+- [golang之map哈希表源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之map哈希表源码解析.md)
+- [golang之双链表源码解析](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 - [golang的json源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang的json源码解析.md)
 - [go1.13.5版本源码注释](https://github.com/friendlyhank/go1.13.5-annotated)
 
@@ -68,10 +68,8 @@
 - [plan9汇编入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/assemble/plan9汇编入门.md)
 
 # 数据结构
-- [数组]()
-- [切片](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之slice切片源码解析.md)
-- [map解读](https://draveness.me/golang/docs/part2-foundation/ch03-datastructure/golang-hashmap/)
-- [redis6.0源码双端链表](https://github.com/friendlyhank/toBeTopgopher/blob/master/redis/redis6.0源码双端链表.md)
+- [数组](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之array数组源码解析.md)
+- [map解读](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之map哈希表源码解析.md)
 - [环形双链表](https://github.com/friendlyhank/go-source/blob/master/container/list/list.md)
 
 # 算法
