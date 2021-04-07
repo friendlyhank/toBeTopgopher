@@ -119,6 +119,7 @@
 - [SQL优化连弹五之使用索引和不使用索引的典型场景](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/SQL优化连弹五之使用索引和不使用索引的典型场景.md)
 - [Innodb锁讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/Innodb锁讲解.md)
 - [分布式事务XA](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/mysql分布式事务XA.md)
+- [MySql中“too many connections“错误](https://github.com/friendlyhank/toBeTopgopher/blob/master/mysql/MySql中toomanyconnections错误.md)
 
 ## 非关系型数据库
 ### redis
