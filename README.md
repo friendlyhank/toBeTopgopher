@@ -46,7 +46,7 @@
 
 ### Golang源码知识
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
-- [channel讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/go_channel.md)
+- [golang之channel源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之channel源码解析.md)
 - [select讲解](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang_select.md)
 - [golang之array数组源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之array数组源码解析.md)
 - [golang之slice切片源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之slice切片源码解析.md)
