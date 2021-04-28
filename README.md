@@ -43,7 +43,7 @@
 - [Map入门](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/map.md)
 - [go module初探](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/go_module初探.md)
 - [golang的struct tag](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/golang的struct_tag.md)
-
+- [golang逃逸分析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/base/golang逃逸分析.md)
 ### Golang源码知识
 - [pgm解读](https://github.com/friendlyhank/go-source/blob/master/runtime/golang%20pgm.md)
 - [golang之channel源码解析](https://github.com/friendlyhank/toBeTopgopher/blob/master/golang/source/golang之channel源码解析.md)
