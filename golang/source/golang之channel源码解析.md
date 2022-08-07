@@ -1,6 +1,8 @@
 ﻿> 不要通过共享内存的方式通信，而是应该通过通信的方式共享内存
 > 
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/318d5591178d48d79e369f32694c9779.png)
+
 在大多数编程语言的并发模型中，在传递数据的时候一般是通过共享内存的方式，这种方式存在线程之间的竞态。而go里面Goroutine之间可以通过Channel传输数据，Channel本身也用到锁资源，但两者粒度不一样，两者都是并发安全的。
 
 ## 结构体
@@ -49,13 +51,16 @@ func makechan(t *chantype, size int) *hchan {
 
 1.有接收者，将数据写到接受者内存地址，并唤醒对应接收者的g。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/0329d7f7ff334e478ff27a1f18a1dc48.png)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/e3543ac0b76c4ccf8aaa53c69440719c.png)
 
 2.没有接收者，但是有缓冲区
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/23bfe4ac58e242f2bae1ea50fad41aec.png)
 
 3.没有接收者，没有缓冲区或缓冲区已满，将数据写入sudog，在发送者队列尾部插入,g进入休眠状态
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/aa2d86b8428d4a02ac3c08609c59c564.png)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/86557cce5e074ca7b60df53189901c33.png)
 
 ```go
@@ -194,13 +199,15 @@ func ready(gp *g, traceskip int, next bool) {
 ## 接收
 接收也可以分为三部分:
 1.有发送者队列
-
 (1)无缓冲区产生了发送者队列
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/93f38ebd663943478fc0b41a65360c31.png)
 
 (2)有缓冲区(满了)且产生了发送者队列
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/4caaab58440c4a4c86cb5af7c51f1283.png)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/6718d2eb10034cdb8b0c742b42d1ead6.png)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/7c80a7660bce4ce690ec789cd944c35a.png)
 
 2.有缓冲区，没有发送者队列
@@ -209,6 +216,7 @@ func ready(gp *g, traceskip int, next bool) {
 
 3.没有发送者队列,没有缓冲区或缓冲区没数据，将接收数据指针地址写入sudog，在接收者队列尾部插入
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/b6fac807f5d04fb6a7c57994e8b8e295.png)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/cae8e974cb3f43f9b4fe5018bccdc1bc.png)
 
 ```go
