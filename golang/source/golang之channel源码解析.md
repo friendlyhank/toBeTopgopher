@@ -204,6 +204,7 @@ func ready(gp *g, traceskip int, next bool) {
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/93f38ebd663943478fc0b41a65360c31.png)
 
 (2)有缓冲区(满了)且产生了发送者队列
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/4caaab58440c4a4c86cb5af7c51f1283.png)
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/6718d2eb10034cdb8b0c742b42d1ead6.png)
