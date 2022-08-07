@@ -1,124 +1,78 @@
 ﻿> 不要通过共享内存的方式通信，而是应该通过通信的方式共享内存
+> 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/318d5591178d48d79e369f32694c9779.png)
+在大多数编程语言的并发模型中，在传递数据的时候一般是通过共享内存的方式，这种方式存在线程之间的竞态。而go里面Goroutine之间可以通过Channel传输数据，Channel本身也用到锁资源，但两者粒度不一样，两者都是并发安全的。
 
-在go官方描述Channel这一特性的时候有提到,在大多数编程语言的并发模型中，在传递数据的时候一般是通过共享内存的方式，这种方式存在线程之间的竞态，而go语言中使用的是并发模型是Goroutine和Channel,Goroutine作为Go最小的执行单元，而Goroutine之间可以通过Channel传输数据,Channel本身也用到锁资源，是并发安全的。
 ## 结构体
-```go
-type hchan struct {
-	qcount  uint     //元素的个数
-	dataqsiz uint           //缓冲槽大小
-	buf      unsafe.Pointer//缓冲槽指针
-	elemsize uint16  //元素的大小
-	closed uint32   //是否关闭状态
-	elemtype *_type //元素的类型 element type
-	sendx    uint   // 发送索引
-	recvx    uint   // 接受索引
-	
-	recvq    waitq  // 等待接收goroutine队列列表 
-	sendq    waitq  // 等待发送的goroutine队列列表
-	
-	lock mutex
-}
-```
-channel分为发送者sendq和接收者recvq，在发送和接收时候都会有阻塞的状态，没有缓冲槽则会出现阻塞的情况，也是我们说的同步的概念，有缓冲槽的的情况则根据缓冲槽是否满了，来决定阻塞和非阻塞，非阻塞则是我们说的异步概念，因为发送和接收本身可以理解为是解耦的，另外从结构体我们可以看出channel本身也是有锁的，所以是线程安全的。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/c81c3799c2ed4bea80e8f3078fe016a6.png)
+channel分为发送者sendq和接收者recvq，在没有缓冲槽情况，发送端和接收端都可能发生阻塞的状态。有缓冲槽的的情况则根据缓冲槽是否满了，来决定阻塞和非阻塞。因为发送和接收本身可以理解为是解耦的,channel相当于是队列，即FIFO，遵循的是先进先出的概念。
+
 ## 初始化
-```bash
-func makechan(t *chantype,size int)*hchan{
+```go
+func makechan(t *chantype, size int) *hchan {
 	elem := t.elem
 	
-	//计算需要的内存空间
-	mem,overflow :=math.MulUintptr(elem.size,uintptr(size))
+	// 计算所需的空间的大小elem.size*size,并判断是否溢出
+	mem, overflow := math.MulUintptr(elem.size, uintptr(size))
 	if overflow || mem > maxAlloc-hchanSize || size < 0 {
+		panic(plainError("makechan: size out of range"))
 	}
 
+	// Hchan does not contain pointers interesting for GC when elements stored in buf do not contain pointers.
+	// buf points into the same allocation, elemtype is persistent.
+	// SudoG's are referenced from their owning thread so they can't be collected.
+	// TODO(dvyukov,rlh): Rethink when collector can move allocated objects.
 	var c *hchan
-	switch  {
-	case mem == 0: //无缓冲区
+	switch {
+	case mem == 0: // 没有缓冲槽，size是0,分配chan内存空间
 		c = (*hchan)(mallocgc(hchanSize, nil, true))
-		// Race detector uses this location for synchronization.
 		c.buf = c.raceaddr()
-	case elem.ptrdata == 0://如果不是指针类型
-		// Elements do not contain pointers.
-		// Allocate hchan and buf in one call.
-		c = (*hchan)(mallocgc(hchanSize+mem,nil,true))
-		c.buf = add(unsafe.Pointer(c),hchanSize)
+	case elem.ptrdata == 0:
+		// 当前的chan和缓冲槽分配一块连续的内存空间
+		c = (*hchan)(mallocgc(hchanSize+mem, nil, true))
+		c.buf = add(unsafe.Pointer(c), hchanSize)
 	default:
-		//如果是指针
-		// Elements contain pointers.
+		// 指针单独为chan和缓冲槽分配内存空间
 		c = new(hchan)
-		c.buf = mallocgc(mem,elem,true)
+		c.buf = mallocgc(mem, elem, true)
 	}
 
 	c.elemsize = uint16(elem.size)
 	c.elemtype = elem
-	c.dataqsiz =uint(size)
+	c.dataqsiz = uint(size)
 	return c
 }
 ```
-初始化chan比较简单，就是根据元素的数据类型和大小计算出需要的内存空间,再根据是否有缓存区数据来初始化chan和chan的buf缓存区。
 
-channel相当于是队列，即FIFO，遵循的是先进先出的概念。
 ## 发送
-当我们想要向channel发送数据的时候,系统会调用runtime.chansend1,然后会调用runtime.chansend，这个函数负责了发送数据的全部逻辑，如果我们调用时将block参数设置为true,那么就表示当前发送操作是一个阻塞操作。
-```bash
-func chansend1(c *hchan, elem unsafe.Pointer) {
-	chansend(c, elem, true, getcallerpc())
-}
-```
-runtime.chansend主要分为三个部分：
+发送可以分为三个部分:
 
- 1. 当存在等待的接收者时，通过runtime.send直接将数据发送给阻塞的接收者。
+1.有接收者，将数据写到接受者内存地址，并唤醒对应接收者的g。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/0329d7f7ff334e478ff27a1f18a1dc48.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/e3543ac0b76c4ccf8aaa53c69440719c.png)
 
-```bash
+2.没有接收者，但是有缓冲区
+![在这里插入图片描述](https://img-blog.csdnimg.cn/23bfe4ac58e242f2bae1ea50fad41aec.png)
+
+3.没有接收者，没有缓冲区或缓冲区已满，将数据写入sudog，在发送者队列尾部插入,g进入休眠状态
+![在这里插入图片描述](https://img-blog.csdnimg.cn/aa2d86b8428d4a02ac3c08609c59c564.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/86557cce5e074ca7b60df53189901c33.png)
+
+```go
 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
-	.....
-	//有等待接收的队列,直接将数据发送到接收端的内存地址中
+	lock(&c.lock)
+
+	if c.closed != 0 {
+		unlock(&c.lock)
+		panic(plainError("send on closed channel"))
+	}
+	//有等待接收的队列,直接将数据发送到接收端的内存地址中,并设置对应的g为可执行状态
 	if sg := c.recvq.dequeue(); sg != nil {
-		// Found a waiting receiver. We pass the value we want to send
-		// directly to the receiver, bypassing the channel buffer (if any).
 		send(c, sg, ep, func() { unlock(&c.lock) }, 3)
 		return true
 	}
-	.....
-```
-### 直接发送
-如果目标Channel没有被关闭并且由处于读等待的Goroutine,那么chansend函数会从接收队列recvq中取出最先进入等待的Goroutine直接向它发送数据并将读等待的Goroutine唤醒。
-```bash
-func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
-	.....
-	//直接发送数据到接收端
-	if sg.elem != nil {
-		sendDirect(c.elemtype, sg, ep)
-		sg.elem = nil
-	}
-	gp := sg.g
-	unlockf()
-	gp.param = unsafe.Pointer(sg)
-	if sg.releasetime != 0 {
-		sg.releasetime = cputicks()
-	}
-	//唤醒处于读等待的Goroutine
-	goready(gp, skip+1)
-}
-```
-
-```bash
-func sendDirect(t *_type, sg *sudog, src unsafe.Pointer) {
-	dst := sg.elem
-	typeBitsBulkBarrier(t, uintptr(dst), uintptr(src), t.size)
-
-	//直接将数据写入接收端的内存地址
-	memmove(dst, src, t.size)
-}
-```
-
- 2. 当缓存区存在空余的空间时，将发送的数据写入channel的缓冲区。
- ### 缓冲区
-```bash
-func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
-	.....
 	//chan有缓存槽,把数据写入缓冲槽中
 	if c.qcount < c.dataqsiz {
-		// Space is available in the channel buffer. Enqueue the element to send.
 		//根据发送的索引计算出要写入缓冲槽的位置
 		qp := chanbuf(c, c.sendx)
 		
@@ -132,74 +86,135 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
 		unlock(&c.lock)
 		return true
 	}
-	.....
-}
-```
 
- 3. 当不存在缓冲区或者缓存区已经满时，等待其他Goroutine从Channel接收数据。
-### 阻塞发送
-当 Channel 没有接收者能够处理数据时，向 Channel 发送数据就会被下游阻塞，当然使用 select 关键字可以向 Channel 非阻塞地发送消息。向 Channel 阻塞地发送数据会执行下面的代码，我们可以简单梳理一下这段代码的逻辑：
-
-```go
-func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
-	...
-	//如果没有缓存槽,往发送队列中加入一条等待执行的sugo
-	// Block on the channel. Some receiver will complete our operation for us.
-	//获取当前运行的goroutine
+	if !block {
+		unlock(&c.lock)
+		return false
+	}
+	
+	//如果没有缓存槽,往发送队列中加入一条等待执行的sudgo
 	gp := getg()
-	//获取一个等待执行的sugo
+	//获取一个等待执行的sudgo
 	mysg := acquireSudog()
 	mysg.releasetime = 0
 	if t0 != 0 {
 		mysg.releasetime = -1
 	}
-	// No stack splits between assigning elem and enqueuing mysg
-	// on gp.waiting where copystack can find it.
 	//将数据写入sugo
 	mysg.elem = ep
 	mysg.waitlink = nil
 	//sudo绑定goroutione
 	mysg.g = gp
 	mysg.isSelect = false
-	//sudo绑定chan
 	mysg.c = c
 	gp.waiting = mysg
 	gp.param = nil
-	//将sugo加入chan的发送队列
 	c.sendq.enqueue(mysg)
+	
 	atomic.Store8(&gp.parkingOnChan, 1)
 	//让当前goroutine进入休眠状态,等待被唤醒
 	gopark(chanparkcommit, unsafe.Pointer(&c.lock), waitReasonChanSend, traceEvGoBlockSend, 2)
-	//保持ep的活跃状态
+
 	KeepAlive(ep)
-	
+
 	//到这里说明gorourtine被接收端唤醒，对sugo资源进行释放
 	if mysg != gp.waiting {
 		throw("G waiting list is corrupted")
 	}
 	gp.waiting = nil
 	gp.activeStackChans = false
-	if gp.param == nil {
-		if c.closed == 0 {
-			throw("chansend: spurious wakeup")
-		}
-		panic(plainError("send on closed channel"))
-	}
+	closed := !mysg.success
 	gp.param = nil
 	if mysg.releasetime > 0 {
 		blockevent(mysg.releasetime-t0, 2)
 	}
 	mysg.c = nil
 	releaseSudog(mysg)
+	if closed {
+		if c.closed == 0 {
+			throw("chansend: spurious wakeup")
+		}
+		panic(plainError("send on closed channel"))
+	}
 	return true
 }
 ```
-阻塞发送这里可以看到用到了sugo对象，包括阻塞接收的时候也会用的，实际上sugo就是把当时使用的goroutine和需要发送或接收的数据进行封装(当然这个goroutine是休眠状态的)，然后放到接收队列和发送队列之中，唤醒的时候也是拿到sugo对应的goroutine进行唤醒操作。
+
+```go
+func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
+	// 将数据拷贝到对端
+	if sg.elem != nil {
+		// 拷贝值到目标内存地址
+		sendDirect(c.elemtype, sg, ep)
+		sg.elem = nil
+	}
+	gp := sg.g
+	unlockf()
+	gp.param = unsafe.Pointer(sg) // g也会绑定sudog信息
+	sg.success = true
+	if sg.releasetime != 0 {
+		sg.releasetime = cputicks()
+	}
+	// 唤醒处于读等待的Goroutine
+	goready(gp, skip+1)
+}
+```
+
+```go
+func goready(gp *g, traceskip int) {
+	// 系统栈执行调度
+	systemstack(func() {
+		ready(gp, traceskip, true)
+	})
+}
+```
+
+```go
+func ready(gp *g, traceskip int, next bool) {
+    // 获取g的状态
+	status := readgstatus(gp)
+	// g0
+	_g_ := getg()
+	// 获取g0上的m
+	mp := acquirem()
+	if status&^_Gscan != _Gwaiting {
+		dumpgstatus(gp)
+		throw("bad g->status in ready")
+	}
+	// 修改g的状态为可执行状态
+	casgstatus(gp, _Gwaiting, _Grunnable)
+	// 放入p的优先者队列
+	runqput(_g_.m.p.ptr(), gp, next)
+	// 开始调度
+	wakep()
+	releasem(mp)
+}
+```
+
 ## 接收
- 1. 当存在等待的发送者时，通过runtime.recv直接从阻塞的发送者或者缓存区中获取数据。
+接收也可以分为三部分:
+1.有发送者队列
+
+(1)无缓冲区产生了发送者队列
+![在这里插入图片描述](https://img-blog.csdnimg.cn/93f38ebd663943478fc0b41a65360c31.png)
+
+(2)有缓冲区(满了)且产生了发送者队列
+![在这里插入图片描述](https://img-blog.csdnimg.cn/4caaab58440c4a4c86cb5af7c51f1283.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/6718d2eb10034cdb8b0c742b42d1ead6.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7c80a7660bce4ce690ec789cd944c35a.png)
+
+2.有缓冲区，没有发送者队列
+![在这里插入图片描述](https://img-blog.csdnimg.cn/f0ef5b07f7bd412184a2065529726310.png)
+
+
+3.没有发送者队列,没有缓冲区或缓冲区没数据，将接收数据指针地址写入sudog，在接收者队列尾部插入
+![在这里插入图片描述](https://img-blog.csdnimg.cn/b6fac807f5d04fb6a7c57994e8b8e295.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/cae8e974cb3f43f9b4fe5018bccdc1bc.png)
+
 ```go
 func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) {
-	.....
+	lock(&c.lock)
+
 	//如果有等待的发送队列,那么直接接收
 	if sg := c.sendq.dequeue(); sg != nil {
 		// Found a waiting sender. If buffer is size 0, receive value
@@ -209,77 +224,16 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 		recv(c, sg, ep, func() { unlock(&c.lock) }, 3)
 		return true, true
 	}
-	.....
-}
-```
-
-### 直接接收
-```go
-func recv(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
-	//如果没有缓存槽,那么直接拷贝发送队列的值
-	if c.dataqsiz == 0 {
-		if ep != nil {
-			// copy data from sender
-			recvDirect(c.elemtype, sg, ep)
-		}
-	} else {
-		//如果有缓冲槽，说明缓存槽满了并且产生了等待发送的队列
-		//从缓冲槽中获取数据,并且将发送队列的头节点保存的数据写入缓冲槽中
-		qp := chanbuf(c, c.recvx)
-		
-		//将缓冲槽的数据拷贝到接收者目标地址
-		if ep != nil {
-			typedmemmove(c.elemtype, ep, qp)
-		}
-		//将发送队列的头节点拷贝到当前缓存槽位置
-		typedmemmove(c.elemtype, qp, sg.elem)
-		c.recvx++ //接收索引增加
-		if c.recvx == c.dataqsiz {
-			c.recvx = 0
-		}
-		//缓冲槽满了的情况是缓冲槽发送索引等于接收的索引值
-		c.sendx = c.recvx // c.sendx = (c.sendx+1) % c.dataqsiz
-	}
-	sg.elem = nil
-	gp := sg.g
-	unlockf()
-	gp.param = unsafe.Pointer(sg)
-	if sg.releasetime != 0 {
-		sg.releasetime = cputicks()
-	}
-	//将阻塞的发送方头节点goroutine唤醒
-	goready(gp, skip+1)
-}
-```
-
-该函数会根据缓冲区的大小分别处理不同的情况：
-
-如果 Channel 不存在缓冲区；
-(1)调用 runtime.recvDirect 函数会将 Channel 发送队列中 Goroutine 存储的 elem 数据拷贝到目标内存地址中；
-如果 Channel 存在缓冲区；
-(2)将队列中的数据拷贝到接收方的内存地址；
-(3)将发送队列头的数据拷贝到缓冲区中，释放一个阻塞的发送方；
-
- 2. 当缓冲区存在数据时，从Channel的缓冲区接收数据。
-### 缓冲区
-```go
-func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) {
-	.....
 	//没有在等待的发送队列,缓冲槽中有数据，从缓存槽中读取数据
 	if c.qcount > 0 {
-		// Receive directly from queue
 		qp := chanbuf(c, c.recvx)
-		if raceenabled {
-			raceacquire(qp)
-			racerelease(qp)
-		}
-		////将缓冲槽的数据拷贝到接收方目标地址
+		
 		if ep != nil {
 			typedmemmove(c.elemtype, ep, qp)
 		}
 		//将已经被拷贝到发送方的缓冲槽释放
 		typedmemclr(c.elemtype, qp)
-		c.recvx++//接收索引增加
+		c.recvx++
 		if c.recvx == c.dataqsiz {
 			c.recvx = 0
 		}
@@ -287,20 +241,13 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 		unlock(&c.lock)
 		return true, true
 	}
-	.....
-}
-```
 
- 3. 当缓冲区中不存在数据时，等待其他Goroutine 向 Channel 发送数据；
-接收的时候也会去唤醒发送方。
+	if !block {
+		unlock(&c.lock)
+		return false, false
+	}
 
-## 阻塞接收
-```go
-func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) {
-	.....
 	//如果没有缓存槽,往接收队列中加入一条等待执行的sugo
-	
-	//获取当前运行的goroutine
 	gp := getg()
 	//获取一个等待执行的sugo
 	mysg := acquireSudog()
@@ -308,8 +255,8 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 	if t0 != 0 {
 		mysg.releasetime = -1
 	}
-	
-	//将数据写入sugo
+
+	//将对应接受者指针地址写入sugo
 	mysg.elem = ep
 	mysg.waitlink = nil
 	gp.waiting = mysg
@@ -322,12 +269,10 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 	//将sugo加入chan的接收队列
 	c.recvq.enqueue(mysg)
 	
-	atomic.Store8(&gp.parkingOnChan, 1)
 	//让当前goroutine进入休眠状态,等待被唤醒
 	gopark(chanparkcommit, unsafe.Pointer(&c.lock), waitReasonChanReceive, traceEvGoBlockRecv, 2)
 	
 	//到这里说明gorourtine被发送端唤醒，对sugo资源进行释放
-	// someone woke us up
 	if mysg != gp.waiting {
 		throw("G waiting list is corrupted")
 	}
@@ -336,17 +281,58 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 	if mysg.releasetime > 0 {
 		blockevent(mysg.releasetime-t0, 2)
 	}
-	closed := gp.param == nil
+	success := mysg.success
 	gp.param = nil
 	mysg.c = nil
 	releaseSudog(mysg)
-	return true, !closed
+
+	return true, success
 }
 ```
-## 关闭通道
+
+```go
+func recv(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
+	// 如果没有缓存槽,那么直接拷贝发送队列的值
+	if c.dataqsiz == 0 {
+		if ep != nil {
+			// copy data from sender
+			recvDirect(c.elemtype, sg, ep)
+		}
+	} else {
+		// 如果有缓冲槽，说明缓存槽满了并且产生了等待发送的队列
+		// 从缓冲槽中获取数据,并且将发送队列的头节点保存的数据写入缓冲槽中
+		qp := chanbuf(c, c.recvx)
+		// copy data from queue to receiver
+		// 将缓冲槽的数据拷贝到接收者目标地址
+		if ep != nil {
+			typedmemmove(c.elemtype, ep, qp)
+		}
+		//拷贝发送者数据到缓冲区
+		typedmemmove(c.elemtype, qp, sg.elem)
+		c.recvx++ // 接收索引增加
+		if c.recvx == c.dataqsiz {
+			c.recvx = 0
+		}
+		// 缓冲槽满了的情况是缓冲槽发送索引等于接收的索引值
+		c.sendx = c.recvx // c.sendx = (c.sendx+1) % c.dataqsiz
+	}
+	sg.elem = nil
+	gp := sg.g
+	unlockf()
+	gp.param = unsafe.Pointer(sg)
+	sg.success = true
+	if sg.releasetime != 0 {
+		sg.releasetime = cputicks()
+	}
+	// 将阻塞的发送方头节点goroutine唤醒
+	goready(gp, skip+1)
+}
+```
+
+##  关闭
 ```go
 func closechan(c *hchan) {
-	.....
+	c.closed = 1
 	//声明一个g列表
 	var glist gList
 
@@ -364,13 +350,11 @@ func closechan(c *hchan) {
 			sg.releasetime = cputicks()
 		}
 		gp := sg.g
-		gp.param = nil
-		if raceenabled {
-			raceacquireg(gp, c.raceaddr())
-		}
+		gp.param = unsafe.Pointer(sg)
+		sg.success = false
 		glist.push(gp)
 	}
-	
+
 	//释放所有发送者队列，把等待的发送者队列的g加入到g列表中
 	for {
 		sg := c.sendq.dequeue()
@@ -382,10 +366,8 @@ func closechan(c *hchan) {
 			sg.releasetime = cputicks()
 		}
 		gp := sg.g
-		gp.param = nil
-		if raceenabled {
-			raceacquireg(gp, c.raceaddr())
-		}
+		gp.param = unsafe.Pointer(sg)
+		sg.success = false
 		glist.push(gp)
 	}
 	unlock(&c.lock)
